@@ -1,0 +1,62 @@
+<div class='row'>
+    <div class='col-md-offset-3 col-md-6'>
+    	<nav class='navbar navbar-default'>
+		    <div class='container-fluid'>
+				<ul class='nav navbar-nav'>
+					<li><a href='/'>Expenses</a></li>
+				</ul>
+		        <ul class='nav navbar-nav navbar-right'>
+		            <li><a href='/logout' target='_self'>Log Out</a>
+		        </ul>
+		    </div>
+		</nav>
+    </div>
+</div>
+<div class="row" ng-show="state === 'loading'">
+	<div class="col-md-offset-3 col-md-6">
+		<h1 class="text-center">LOADING!!!</h1>
+	</div>	
+</div>
+
+<div class="row" ng-show="state === 'error'">
+	<div class="col-md-offset-3 col-md-6">
+		<h1 class="text-center">ERROR!!!</h1>
+	</div>
+</div>
+
+<div ng-show="state === 'ok'">
+	<div class="row" ng-show="expenses.length === 0">
+		<div class="col-md-offset-3 col-md-6">
+			<h1 class="text-center">No Expenses. Why not add one?</h1>
+		</div>
+	</div>
+
+	<div class="row" ng-show="expenses.length !== 0">
+		<div class="col-md-offset-3 col-md-6">
+			<input type='search' class='form-control' placholder='Search' ng-model='query' />
+		</div>
+	</div>
+
+	<div class="row" ng-repeat="expense in expenses | filter: query">
+		<div class="col-md-offset-3 col-md-6 expense-item" ng-click="edit(expense)">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-md-10"><h2>{{expense.description}}</h2></div>
+						<div class="col-md-2"><h2>{{expense.amount}}</h2></div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<p>{{expense.comment}}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<p>{{expense.date}}</p>
+						</div>
+					</div>
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>

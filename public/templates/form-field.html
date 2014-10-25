@@ -1,0 +1,12 @@
+<div class="row form-group" ng-form="{{field}}" ng-class="{ 'has-error': {{field}}.$dirty && {{field}}.$invalid }">
+	<label class='col-md-2 control-label'>{{field}}</label>
+	<div class="col-md-6" ng-switch="datatype">
+		<quick-datepicker ng-model="record[field]" ng-switch-when="datetime" disable-clear-button="true"></quick-datepicker>
+		<textarea required ng-model="record[field]" type="{{datatype}}" class="form-control" ng-switch-when="textarea" rows="3"/>
+		<input required ng-model="record[field]" type="{{datatype}}" class="form-control" ng-switch-default/>
+	</div>
+	<div class="col-md-4" ng-show="{{field}}.$dirty && {{field}}.$invalid" ng-messages="{{field}}.$error">
+		<p class="control-label" ng-message="required">{{field}} is required</p>
+		<p class="control-label" ng-repeat="(k, v) in types" ng-message='{{k}}'>{{field}} {{v[1]}}</p>
+	</div>
+</div>
