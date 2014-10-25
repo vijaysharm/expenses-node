@@ -183,6 +183,7 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 	})
 	.controller('ListController', function ($scope, $location, expenseService, authenticationService) {
 		$scope.state = 'loading';
+		$scope.predicate = 'date';
 		$scope.expenses = [];
 		expenseService.query({token: authenticationService.token()}).$promise
 			.then(function (expenses) {
