@@ -22,6 +22,11 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 	        	controller: 'AddController',
 	        	resolve: authorize
 	    	})
+	    	.when('/week', {
+	    		templateUrl: 'templates/weeklyexpense.html',
+	    		controller: 'WeekController',
+	    		resolve: authorize
+	    	})
 	    	.when('/edit/:id', {
 				templateUrl: 'templates/editexpense.html',
 	        	controller: 'EditController',
@@ -43,7 +48,7 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 		return {
 			create: function (username, password) {
 				var deferred = $q.defer();
-				$http.post("/user", { username: username, password: password })
+				$http.post('/user', { username: username, password: password })
 		            .then(function (result) {
 		                deferred.resolve(result);
 		            }, function (error) {
@@ -56,7 +61,7 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 			login: function (username, password) {
 				var deferred = $q.defer();
 				delete $window.localStorage.token;
-				$http.post("/login", { username: username, password: password })
+				$http.post('/login', { username: username, password: password })
 		            .then(function (result) {
 		                $window.localStorage.token = result.data.token;
 		                deferred.resolve(result);
@@ -129,6 +134,52 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 					});
 			}
 		};
+	})
+	.controller('WeekController', function ($scope, $location, expenseService, authenticationService) {
+		$scope.state = 'loading';
+		$scope.expenses = [];
+
+		var groupBy = function (expenses) {
+			var group = {};
+			expenses.forEach(function (expense, index) {
+				var date = moment(expense.date).utc();
+				var year = date.year();
+				var week = date.week();
+				var id = year + '.' + week;
+
+				var summary = group[id] || {};
+				summary.expense = summary.expense || [];
+				summary.total = expense.amount + (summary.total || 0);
+				summary.items = 1 + (summary.items || 0);
+				summary.start = moment([year]).week(week).day('Sunday').toDate();
+				summary.end = moment([year]).week(week).day('Saturday').toDate();
+				summary.expense.push(expense);
+
+				group[id] = summary;
+			});
+
+			console.log(group);
+			return _.values(group);
+		};
+
+		expenseService.query({token: authenticationService.token()}).$promise
+			.then(function (expenses) {
+				$scope.expenses = groupBy(expenses);
+				$scope.state = 'ok';
+			}, function (error) {
+				if ( error.status == 401 ) { 
+					authenticationService.logout(function () {
+						$location.url('/login');
+					});
+				}
+				else { $scope.state = 'error'; }
+			});
+
+		$scope.logout = function () {
+			authenticationService.logout(function () {
+				$location.url('/login');
+			});
+		};			
 	})
 	.controller('ListController', function ($scope, $location, expenseService, authenticationService) {
 		$scope.state = 'loading';
@@ -229,6 +280,22 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 		$scope.cancel = function () {
 			$location.url('/');
 		};
+
+		$scope.delete = function () {
+			$scope.expense.$delete({ id: $routeParams.id, token: authenticationService.token() })
+				.then(function (deleted) {
+					$location.url('/');
+				}, function (error) {
+					if ( error.status == 401 ) { 
+						authenticationService.logout(function () {
+							$location.url('/login');
+						});
+					}
+					else {
+						$location.url('/');
+					}
+				});
+			};
 
 		$scope.logout = function () {
 			authenticationService.logout(function () {

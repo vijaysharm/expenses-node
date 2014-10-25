@@ -6,6 +6,9 @@
 					<li><a href="#/">Expenses</a></li>
 				</ul>
 		        <ul class="nav navbar-nav navbar-right">
+					<li><a href='#/'>Expense View</a>
+		        	<li><a href='#/week'>Weekly View</a>
+		        	<li><a href='#/add'>Add</a>
 		            <li><a href ng-click="logout()" target='_self'>Logout</a>
 		        </ul>
 		    </div>
@@ -34,8 +37,9 @@
 			<form-field record="expense" field="amount" live="true" datatype="number"></form-field>
 			<form-field record="expense" field="comment" live="true" datatype="textarea"></form-field>
 			<div class="row form-group">
-				<button class="col-md-5 col-md-offset-1 btn btn-primary" ng-click="save()">Save</button>
-				<button class="col-md-5 col-md-offset-1 btn" ng-click="cancel()">Cancel</button>				
+				<button class="col-md-3 col-md-offset-1 btn btn-primary" ng-click="save()">Save</button>
+				<button class="col-md-3 col-md-offset-1 btn" ng-click="cancel()">Cancel</button>
+				<button class="col-md-3 col-md-offset-1 btn btn-danger" ng-click="delete()">Delete</button>
 			</div>
 		</form>
 	</div>

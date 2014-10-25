@@ -8,6 +8,7 @@
  1. Every field should be filterable
 1. User can print expenses per week with total amount and average day spending.
  1. The API does not need to support this.
+ 1. What is defined as the 'beginning of the week'? Monday? Sunday?
 1. Minimal UI/UX design is needed.
 1. I need every client operation done using JavaScript, reloading the page is not an option.
 1. Create a REST API for all user actions.
@@ -32,3 +33,4 @@
  1. Error messages could be better (send error code down)
 1. Styling
 1. Delete Expense
+1. Check what the date format that is sent up during expense creation is like

@@ -3,10 +3,13 @@
     	<nav class='navbar navbar-default'>
 		    <div class='container-fluid'>
 				<ul class='nav navbar-nav'>
-					<li><a href='/'>Expenses</a></li>
+					<li><a href='#/'>Expenses</a></li>
 				</ul>
 		        <ul class='nav navbar-nav navbar-right'>
-		            <li><a href='/logout' target='_self'>Log Out</a>
+					<li><a href='#/'>Expense View</a>
+		        	<li><a href='#/week'>Weekly View</a>
+		        	<li><a href='#/add'>Add</a>
+		            <li><a href ng-click="logout()" target='_self'>Logout</a>
 		        </ul>
 		    </div>
 		</nav>
@@ -27,34 +30,22 @@
 <div ng-show="state === 'ok'">
 	<div class="row" ng-show="expenses.length === 0">
 		<div class="col-md-offset-3 col-md-6">
-			<h1 class="text-center">No Expenses. Why not add one?</h1>
+			<h1 class="text-center">No Expenses. Why not <a href='#/add'>add</a> one?</h1>
 		</div>
 	</div>
 
-	<div class="row" ng-show="expenses.length !== 0">
+	<div class="row" ng-repeat="expense in expenses">
 		<div class="col-md-offset-3 col-md-6">
-			<input type='search' class='form-control' placholder='Search' ng-model='query' />
-		</div>
-	</div>
-
-	<div class="row" ng-repeat="expense in expenses | filter: query">
-		<div class="col-md-offset-3 col-md-6 expense-item" ng-click="edit(expense)">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
-						<div class="col-md-10"><h2>{{expense.description}}</h2></div>
-						<div class="col-md-2"><h2>{{expense.amount}}</h2></div>
+						<div class="col-md-12"><h2>{{ expense.start | date:'mediumDate' }} - {{ expense.end | date:'mediumDate' }}</h2></div>
 					</div>
 					<div class="row">
-						<div class="col-md-12">
-							<p>{{expense.comment}}</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<p>{{expense.date}}</p>
-						</div>
-					</div>
+						<div class="col-md-4">Items: {{expense.items}}</div>
+						<div class="col-md-4">Total: {{ expense.total | currency }}</div>
+						<div class="col-md-4">Average per day: {{ expense.total / 7 | currency }}</div>
+					</div>					
 				</div>	
 			</div>
 		</div>
