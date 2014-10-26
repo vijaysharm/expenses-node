@@ -158,7 +158,6 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 				group[id] = summary;
 			});
 
-			console.log(group);
 			return _.values(group);
 		};
 

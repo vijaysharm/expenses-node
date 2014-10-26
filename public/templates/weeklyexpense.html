@@ -1,51 +1,63 @@
 <div class='row'>
-    <div class='col-md-offset-3 col-md-6'>
+    <div class='col-md-12'>
     	<nav class='navbar navbar-default'>
 		    <div class='container-fluid'>
 				<ul class='nav navbar-nav'>
 					<li><a href='#/'>Expenses</a></li>
 				</ul>
 		        <ul class='nav navbar-nav navbar-right'>
-					<li><a href='#/'>Expense View</a>
-		        	<li><a href='#/week'>Weekly View</a>
-		        	<li><a href='#/add'>Add</a>
-		            <li><a href ng-click="logout()" target='_self'>Logout</a>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown">View <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href='#/'>Expense List</a></li>
+							<li><a href='#/week'>Weekly Summary</a></li>
+						</ul>
+					</li>
+		        	<li><a href='#/add'>Add</a></li>
+		            <li><a href ng-click="logout()" target='_self'>Logout</a></li>
 		        </ul>
 		    </div>
 		</nav>
     </div>
 </div>
 <div class="row" ng-show="state === 'loading'">
-	<div class="col-md-offset-3 col-md-6">
+	<div class="col-md-12">
 		<h1 class="text-center">LOADING!!!</h1>
 	</div>	
 </div>
 
 <div class="row" ng-show="state === 'error'">
-	<div class="col-md-offset-3 col-md-6">
+	<div class="col-md-12">
 		<h1 class="text-center">ERROR!!!</h1>
 	</div>
 </div>
 
 <div ng-show="state === 'ok'">
 	<div class="row" ng-show="expenses.length === 0">
-		<div class="col-md-offset-3 col-md-6">
+		<div class="col-md-12">
 			<h1 class="text-center">No Expenses. Why not <a href='#/add'>add</a> one?</h1>
 		</div>
 	</div>
 
-	<div class="row" ng-repeat="expense in expenses">
-		<div class="col-md-offset-3 col-md-6">
+	<div class="row expense-list" ng-repeat="expense in expenses">
+		<div class="col-md-12 row-item">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
-						<div class="col-md-12"><h2>{{ expense.start | date:'mediumDate' }} - {{ expense.end | date:'mediumDate' }}</h2></div>
+						<div class="col-md-8">
+							<h2>{{ expense.start | date:'mediumDate' }} to {{ expense.end | date:'mediumDate' }}</h2>
+						</div>
+						<div class="col-md-4">
+							<div class="row"><div class="col-md-12"><h2 class="pull-right">{{ expense.total | currency }}</h2></div></div>
+							<div class="row"><div class="col-md-12"><span class="pull-right text-muted">{{ expense.total / 7 | currency }} per day</span></div></div>
+						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-4">Items: {{expense.items}}</div>
-						<div class="col-md-4">Total: {{ expense.total | currency }}</div>
-						<div class="col-md-4">Average per day: {{ expense.total / 7 | currency }}</div>
-					</div>					
+					<hr/>
+					<div class="row" ng-repeat="item in expense.expense | orderBy:date:true">
+						<div class="col-md-4"><em>{{item.description}}</em></div>
+						<div class="col-md-4 text-center">{{ item.date | date:'short' }}</div>
+						<div class="col-md-4"><span class="pull-right">{{ item.amount | currency }}</span></div>
+					</div>
 				</div>	
 			</div>
 		</div>

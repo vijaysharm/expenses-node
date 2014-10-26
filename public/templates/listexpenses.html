@@ -6,15 +6,21 @@
 					<li><a href='#/'>Expenses</a></li>
 				</ul>
 		        <ul class='nav navbar-nav navbar-right'>
-					<li><a href='#/'>Expense View</a>
-		        	<li><a href='#/week'>Weekly View</a>
-		        	<li><a href='#/add'>Add</a>
-		            <li><a href ng-click="logout()" target='_self'>Logout</a>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown">View <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href='#/'>Expense List</a></li>
+							<li><a href='#/week'>Weekly Summary</a></li>
+						</ul>
+					</li>
+		        	<li><a href='#/add'>Add</a></li>
+		            <li><a href ng-click="logout()" target='_self'>Logout</a></li>
 		        </ul>
 		    </div>
 		</nav>
     </div>
 </div>
+
 <div class="row" ng-show="state === 'loading'">
 	<div class="col-md-12">
 		<h1 class="text-center">LOADING!!!</h1>
@@ -39,12 +45,12 @@
 	</div>
 
 	<div class="row expense-list" ng-repeat="expense in expenses | filter: query | orderBy: predicate:true">
-		<div class="col-md-12 expense-item" ng-click="edit(expense)">
+		<div class="col-md-12 row-item clickable" ng-click="edit(expense)">
 			<div class="row">
 				<div class="col-md-9">
 					<div class="row"><div class="col-md-12"><h3>{{expense.description}}</h3></div></div>
-					<div class="row"><div class="col-md-12"><p>{{expense.comment}}</p></div></div>
 					<div class="row"> <div class="col-md-12"><p class="text-muted">{{ expense.date | date:'short' }}</p></div></div>
+					<div class="row"><div class="col-md-12"><p>{{expense.comment}}</p></div></div>
 				</div>
 				<div class="col-md-3">
 					<h2 class="pull-right">{{ expense.amount | currency }}</h2>
