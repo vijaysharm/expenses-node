@@ -1,5 +1,5 @@
 <div class='row'>
-    <div class='col-md-offset-3 col-md-6'>
+    <div class='col-md-12'>
     	<nav class='navbar navbar-default'>
 		    <div class='container-fluid'>
 				<ul class='nav navbar-nav'>
@@ -16,49 +16,39 @@
     </div>
 </div>
 <div class="row" ng-show="state === 'loading'">
-	<div class="col-md-offset-3 col-md-6">
+	<div class="col-md-12">
 		<h1 class="text-center">LOADING!!!</h1>
 	</div>	
 </div>
 
 <div class="row" ng-show="state === 'error'">
-	<div class="col-md-offset-3 col-md-6">
+	<div class="col-md-12">
 		<h1 class="text-center">ERROR!!!</h1>
 	</div>
 </div>
 
 <div ng-show="state === 'ok'">
 	<div class="row" ng-show="expenses.length === 0">
-		<div class="col-md-offset-3 col-md-6">
+		<div class="col-md-12">
 			<h1 class="text-center">No Expenses. Why not <a href='#/add'>add</a> one?</h1>
 		</div>
 	</div>
 
 	<div class="row" ng-show="expenses.length !== 0">
-		<div class="col-md-offset-3 col-md-6">
-			<input type='search' class='form-control' placeholder='Search Expenses' ng-model='query' />
-		</div>
+		<div class="col-md-offset-8 col-md-4"><input type='search' class='form-control' placeholder='Search Expenses' ng-model='query' /></div>
 	</div>
 
-	<div class="row" ng-repeat="expense in expenses | filter: query | orderBy: predicate:true">
-		<div class="col-md-offset-3 col-md-6 expense-item" ng-click="edit(expense)">
+	<div class="row expense-list" ng-repeat="expense in expenses | filter: query | orderBy: predicate:true">
+		<div class="col-md-12 expense-item" ng-click="edit(expense)">
 			<div class="row">
-				<div class="col-md-12">
-					<div class="row">
-						<div class="col-md-9"><h2>{{expense.description}}</h2></div>
-						<div class="col-md-2"><h2>{{ expense.amount | currency }}</h2></div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<p>{{expense.comment}}</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<p class="text-muted">{{ expense.date | date:'short' }}</p>
-						</div>
-					</div>
-				</div>	
+				<div class="col-md-9">
+					<div class="row"><div class="col-md-12"><h3>{{expense.description}}</h3></div></div>
+					<div class="row"><div class="col-md-12"><p>{{expense.comment}}</p></div></div>
+					<div class="row"> <div class="col-md-12"><p class="text-muted">{{ expense.date | date:'short' }}</p></div></div>
+				</div>
+				<div class="col-md-3">
+					<h2 class="pull-right">{{ expense.amount | currency }}</h2>
+				</div>				
 			</div>
 		</div>
 	</div>
