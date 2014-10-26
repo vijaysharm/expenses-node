@@ -328,6 +328,12 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
             }
 		}
 	})
+	.filter('labelCase', function () {
+        return function (input) {
+            input = input.replace(/([A-Z])/g, ' $1');
+            return input[0].toUpperCase() + input.slice(1);
+        };
+    })
 	.run(function ($rootScope, $location) {
 		$rootScope.$on("$routeChangeError", function (event, current, previous, eventObj) {
 		   	if (eventObj.authenticated === false) {

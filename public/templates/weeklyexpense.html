@@ -10,7 +10,7 @@
 						<a class="dropdown-toggle" data-toggle="dropdown">View <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href='#/'>Expense List</a></li>
-							<li><a href='#/week'>Weekly Summary</a></li>
+							<li class="active"><a href='#/week'>Weekly Summary</a></li>
 						</ul>
 					</li>
 		        	<li><a href='#/add'>Add</a></li>
@@ -39,8 +39,12 @@
 		</div>
 	</div>
 
+	<div class="row">
+		<h1 class="col-md-12">Weekly Summary</h1>
+	</div>
+
 	<div class="row expense-list" ng-repeat="expense in expenses">
-		<div class="col-md-12 row-item">
+		<div class="col-md-12 row-item item-gap">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
