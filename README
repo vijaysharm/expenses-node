@@ -27,10 +27,7 @@
 1. Hit localhost:5000 in any browser
 
 ## TODO
-1. Week View
 1. Better error handling
- 1. Currently supports 401
  1. Error messages could be better (send error code down)
-1. Styling
-1. Delete Expense
 1. Check what the date format that is sent up during expense creation is like
+1. Sort Expense view by

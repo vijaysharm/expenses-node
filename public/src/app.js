@@ -3,11 +3,11 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 		var authorize = {
 			auth: function ($q, authenticationService) {
 				var token = authenticationService.token();
-                if (token) {
-                    return $q.when(token);
-                } else {
-                    return $q.reject({ authenticated: false });
-                }
+	        	if (token) {
+	            	return $q.when(token);
+	        	} else {
+	            	return $q.reject({ authenticated: false });
+	        	}
 			}
 		};
 
@@ -23,9 +23,9 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 	        	resolve: authorize
 	    	})
 	    	.when('/week', {
-	    		templateUrl: 'templates/weeklyexpense.html',
-	    		controller: 'WeekController',
-	    		resolve: authorize
+				templateUrl: 'templates/weeklyexpense.html',
+				controller: 'WeekController',
+				resolve: authorize
 	    	})
 	    	.when('/edit/:id', {
 				templateUrl: 'templates/editexpense.html',
@@ -41,8 +41,8 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 	        	controller: 'LoginController'
 	    	})
 	    	.otherwise({
-                redirectTo: '/'   
-            });
+				redirectTo: '/'
+        	});
 	})
 	.factory('authenticationService', function ($http, $q, $window) {
 		return {
@@ -86,14 +86,14 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 			token: function () {
 				return $window.localStorage.token;
 			}
-		}
+		};
 	})
 	.factory('expenseService', function ($resource) {
 		return $resource('/expenses/:id', { id: '@id' }, {
             'update': { method: 'PUT' }
         });
 	})
-	.controller('NewUserController', function ($scope, $location, authenticationService) {
+	.controller('NewUserController', function ($scope, $location, authenticationService, ErrorCodes) {
 		// TODO: If logged in, then just forward to /
 
 		$scope.state = 'ok';
@@ -108,18 +108,18 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 						$location.url('/login');
 					}, function (error) {
 						$scope.state = 'save-error';
-						$scope.errorMessage = error.data.message;
+						$scope.errorMessage = ErrorCodes[error.data.error];
 					});
 			}
 		};
 	})
-	.controller('LoginController', function ($scope, $location, authenticationService) {
+	.controller('LoginController', function ($scope, $location, authenticationService, ErrorCodes) {
 		// TODO: If logged in, then just forward to /
 
 		$scope.state = 'ok';
 		$scope.user = { username: '', password: '' };
 		$scope.signup = function () {
-			$location.url('/signup')
+			$location.url('/signup');
 		};
 		$scope.login = function () {
 			if ( $scope.loginForm.$invalid ) {
@@ -130,12 +130,12 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 						$location.url('/');
 					}, function (error) {
 						$scope.state = 'save-error';
-						$scope.errorMessage = error.data.message;
+						$scope.errorMessage = ErrorCodes[error.data.error];
 					});
 			}
 		};
 	})
-	.controller('WeekController', function ($scope, $location, expenseService, authenticationService) {
+	.controller('WeekController', function ($scope, $location, expenseService, authenticationService, ErrorCodes) {
 		$scope.state = 'loading';
 		$scope.expenses = [];
 
@@ -166,21 +166,23 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 				$scope.expenses = groupBy(expenses);
 				$scope.state = 'ok';
 			}, function (error) {
-				if ( error.status == 401 ) { 
+				if ( error.status == 401 ) {
 					authenticationService.logout(function () {
 						$location.url('/login');
 					});
+				} else {
+					$scope.state = 'error';
+					$scope.loadErrorMessage = ErrorCodes[error.data.error];
 				}
-				else { $scope.state = 'error'; }
 			});
 
 		$scope.logout = function () {
 			authenticationService.logout(function () {
 				$location.url('/login');
 			});
-		};			
+		};
 	})
-	.controller('ListController', function ($scope, $location, expenseService, authenticationService) {
+	.controller('ListController', function ($scope, $location, expenseService, authenticationService, ErrorCodes) {
 		$scope.state = 'loading';
 		$scope.predicate = 'date';
 		$scope.expenses = [];
@@ -189,12 +191,14 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 				$scope.expenses = expenses;
 				$scope.state = 'ok';
 			}, function (error) {
-				if ( error.status == 401 ) { 
+				if ( error.status == 401 ) {
 					authenticationService.logout(function () {
 						$location.url('/login');
 					});
+				} else {
+					$scope.state = 'error';
+					$scope.loadErrorMessage = ErrorCodes[error.data.error];
 				}
-				else { $scope.state = 'error'; }
 			});
 		$scope.edit = function (expense) {
 			$location.url('/edit/' + expense._id);
@@ -206,7 +210,7 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 			});
 		};
 	})
-	.controller('AddController', function ($scope, $location, expenseService, authenticationService) {
+	.controller('AddController', function ($scope, $location, expenseService, authenticationService, ErrorCodes) {
 		$scope.state = 'ok';
 		$scope.expense = new expenseService({
 			description: '',
@@ -223,14 +227,13 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 				$scope.expense.$save({token: authenticationService.token()}).then(function (added) {
 					$location.url('/');
 				}, function (error) {
-					if ( error.status == 401 ) { 
+					if ( error.status == 401 ) {
 						authenticationService.logout(function () {
 							$location.url('/login');
 						});
-					}
-					else { 
+					} else {
 						$scope.state = 'error';
-						$scope.errorMessage = error.data.message;
+						$scope.errorMessage = ErrorCodes[error.data.error];
 					}
 				});
 			}
@@ -246,7 +249,7 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 			});
 		};
 	})
-	.controller('EditController', function ($scope, $location, $routeParams, expenseService, authenticationService) {
+	.controller('EditController', function ($scope, $location, $routeParams, expenseService, authenticationService, ErrorCodes) {
 		$scope.state = 'loading';
 		expenseService.get({ id: $routeParams.id, token: authenticationService.token() })
 			.$promise.then(function (expense) {
@@ -254,6 +257,7 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 				$scope.state = 'ok';
 			}, function (error) {
 				$scope.state = 'error';
+				$scope.loadErrorMessage = ErrorCodes[error.data.error];
 			});
 
 		$scope.save = function () {
@@ -264,14 +268,14 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 					.then(function (updated) {
 						$location.url('/');
 					}, function (error) {
-						if ( error.status == 401 ) { 
+						if ( error.status == 401 ) {
 							authenticationService.logout(function () {
 								$location.url('/login');
 							});
 						}
-						else { 
+						else {
 							$scope.state = 'save-error';
-							$scope.errorMessage = error.data.message;
+							$scope.errorMessage = ErrorCodes[error.data.error];
 						}
 					});
 			}
@@ -286,7 +290,7 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 				.then(function (deleted) {
 					$location.url('/');
 				}, function (error) {
-					if ( error.status == 401 ) { 
+					if ( error.status == 401 ) {
 						authenticationService.logout(function () {
 							$location.url('/login');
 						});
@@ -295,17 +299,39 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
 						$location.url('/');
 					}
 				});
-			};
+		};
 
 		$scope.logout = function () {
 			authenticationService.logout(function () {
 				$location.url('/login');
 			});
-		};		
+		};
+	})
+	.value('ErrorCodes', {
+		'expense.insert.failure': 'Failed to create expense',
+		'expense.fetch.failure': 'Failed to fetch expense',
+		'expense.search.failure': 'Failed to find expense',
+		'expense.update.failure': 'Failed to update expense',
+		'expense.delete.failure': 'Failed to delete expense',
+		'expense.description.empty': 'Description cannot be empty',
+		'expense.comment.empty': 'Comment cannot be empty',
+		'expense.date.invalid': 'Invalid date provided',
+		'expense.date.empty': 'Date cannot be empty',
+		'expense.amount.invalid': 'Invalid amout given',
+		'expense.invalid.id': 'Invalid expense ID given',
+		'expense.not.found': 'Expense not found',
+		'session.update.failure': 'Failed to update session',
+		'session.search.failure': 'Failed to find session',
+		'credentials.empty.error': 'Username or password cannot be empty',
+		'credentials.invalid.error': 'Invalid username or password',
+		'user.insert.failure': 'Failed to create user',
+		'user.search.failure': 'Failed to find user',
+		'username.already.exists': 'Username already exists',
+		'invalid.token.error': 'Invalid session token used'
 	})
 	.value('FieldTypes', {
         text: ['Text', 'should be text'],
-        text: ['Textarea', 'should be text'],
+        textarea: ['Textarea', 'should be text'],
         number: ['Number', 'should be a number'],
         datetime: ['Datetime', 'should be a datetime'],
         password: ['Password', 'should be a password']
@@ -326,7 +352,7 @@ angular.module('ExpenseApp', ['ngRoute', 'ngResource', 'ngMessages', 'ngQuickDat
                     $scope[$scope.field].$setDirty();
                 });
             }
-		}
+		};
 	})
 	.filter('labelCase', function () {
         return function (input) {

@@ -23,13 +23,13 @@
 
 <div class="row" ng-show="state === 'loading'">
 	<div class="col-md-12">
-		<h1 class="text-center">LOADING!!!</h1>
-	</div>	
+		<h1 class="text-center"></h1>
+	</div>
 </div>
 
 <div class="row" ng-show="state === 'error'">
 	<div class="col-md-12">
-		<h1 class="text-center">ERROR!!!</h1>
+		<h1 class="text-center">{{loadErrorMessage}}</h1>
 	</div>
 </div>
 
@@ -55,7 +55,7 @@
 				</div>
 				<div class="col-md-3">
 					<h2 class="pull-right">{{ expense.amount | currency }}</h2>
-				</div>				
+				</div>
 			</div>
 		</div>
 	</div>

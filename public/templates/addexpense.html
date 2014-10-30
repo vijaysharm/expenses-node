@@ -33,7 +33,7 @@
 				<form-field record="expense" field="comment" live="false" datatype="textarea"></form-field>
 				<div class="row form-group">
 					<button class="col-md-offset-6 col-md-2 btn btn-success" ng-click="save()">Add</button>
-					<button class="col-md-offset-1 col-md-2 btn" ng-click="cancel()">Cancel</button>				
+					<button class="col-md-offset-1 col-md-2 btn" ng-click="cancel()">Cancel</button>
 				</div>
 			</form>
 		</div>
@@ -41,6 +41,6 @@
 </div>
 <div class="row" ng-show="state === 'error'">
 	<div class="col-md-12">
-		<h3 class="text-center has-error">Failed to save expense because {{errorMessage}}</h3>
+		<h3 class="text-center has-error">{{errorMessage}}</h3>
 	</div>
 </div>
