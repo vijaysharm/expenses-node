@@ -42,10 +42,22 @@
 
 	<div class="row" ng-show="expenses.length !== 0">
 		<h1 class="col-md-8">Expense List</h1>
-		<div class="col-md-4"><input type='search' class='form-control' placeholder='Search Expenses' ng-model='query' /></div>
+		<div class="col-md-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <input type='search' class='form-control' placeholder='Search Expenses' ng-model='query' />
+                </div>
+                <div class="col-md-12">
+                    <a href="" class="pull-right breating-room" ng-click="predicate = 'date'; reverse=!reverse">Date</a>
+                    <a href="" class="pull-right breating-room" ng-click="predicate = 'description'; reverse=!reverse">Description</a>
+                    <a href="" class="pull-right breating-room" ng-click="predicate = 'amount'; reverse=!reverse">Amount</a>
+                    <span class="pull-right breating-room">Sort By: </span>
+                </div>
+            </div>
+        </div>
 	</div>
 
-	<div class="row expense-list" ng-repeat="expense in expenses | filter: query | orderBy: predicate:true">
+	<div class="row expense-list" ng-repeat="expense in expenses | filter: query | orderBy: predicate:reverse">
 		<div class="col-md-12 row-item clickable item-gap" ng-click="edit(expense)">
 			<div class="row">
 				<div class="col-md-9">
