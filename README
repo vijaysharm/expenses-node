@@ -27,5 +27,4 @@
 1. Hit localhost:5000 in any browser
 
 ## TODO
-1. Check what the date format that is sent up during expense creation is like
 1. Make errors displayed in proper color and in form box
