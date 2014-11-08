@@ -254,7 +254,7 @@ app.use(
 }).delete('/expenses/:id', loadRepositories, getUserFromToken, function (req, res) {
 	if (ObjectID.isValid(req.params.id)) {
 		req.expenseRepository.delete(req.user, req.params.id, function (removed) {
-			if ( removed ) { res.status(200).end(); }
+			if ( removed ) { res.status(204).end(); }
 			else { res.status(400).json({error: 'expense.invalid.id'});}
 		}, function (message) {
 			res.status(500).json(message);
@@ -291,7 +291,7 @@ app.use(
 		} else {
 			// kill existing sessions if a failed login attempt occurs
 			req.sessionRepository.removeByUsername(username, function () {
-				res.status(400).json({error: 'credentials.invalid.error'});
+				res.status(401).json({error: 'credentials.invalid.error'});
 			});
 		}
 	} else {
