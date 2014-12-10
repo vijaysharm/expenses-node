@@ -226,6 +226,7 @@ app.use(
 	res.sendfile('./public/views/index.html');
 }).get('/expenses', loadRepositories, getUserFromToken, function (req, res) {
 	req.expenseRepository.get(req.user, function (expenses) {
+		console.log('GET /expenses'); console.log(expenses);
 		res.status(200).json(expenses);
 	}, function (err) {
 		res.status(500).json(err);
@@ -235,6 +236,7 @@ app.use(
 	if (id && ObjectID.isValid(id)) {
 		req.expenseRepository.find(id, req.user, function (expense) {
 			if (expense) {
+				console.log('GET /expenses/' + id); console.log(expense);
 				res.status(200).json(expense);
 			} else {
 				res.status(404).json({error: 'expense.not.found'});
@@ -246,6 +248,7 @@ app.use(
 		res.status(400).json({error: 'expense.invalid.id'});
 	}
 }).post('/expenses', loadRepositories, getUserFromToken, validateExpense, function (req, res) {
+	console.log('POST /expenses/'); console.log(req.expense);
 	req.expenseRepository.create(req.user, req.expense, function (saved) {
 		res.status(200).json(saved);
 	}, function (err) {
@@ -253,6 +256,7 @@ app.use(
 	});
 }).delete('/expenses/:id', loadRepositories, getUserFromToken, function (req, res) {
 	if (ObjectID.isValid(req.params.id)) {
+		console.log('DELETE /expenses/'); console.log(req.params.id);
 		req.expenseRepository.delete(req.user, req.params.id, function (removed) {
 			if ( removed ) { res.status(204).end(); }
 			else { res.status(400).json({error: 'expense.invalid.id'});}
@@ -265,6 +269,7 @@ app.use(
 }).put('/expenses/:id', loadRepositories, getUserFromToken, validateExpense, function (req, res) {
 	if (ObjectID.isValid(req.params.id)) {
 		req.expense._id = req.params.id;
+		console.log('PUT /expenses/'); console.log(req.expense);
 		req.expenseRepository.update(req.user, req.expense, function (expense) {
 			if (expense) { res.status(200).json(expense); }
 			else { res.status(400).json({error: 'expene.not.found'}); }
