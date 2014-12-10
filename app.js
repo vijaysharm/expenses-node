@@ -27,12 +27,19 @@ function wrapdb( db ) {
 }
 
 function dbInstance (callback) {
-	var options = {safe: true, strict: true, fsync:false, journal:true};
-	var db = new Db('toptal', new Server('127.0.0.1', 27017, {}), options);
-	db.open(function (err, db) {
-		if( err ) throw err;
-		callback(wrapdb(db));
-	});
+	if ( process.env.MONGOLAB_URI ) {
+		Db.connect( process.env.MONGOLAB_URI, function(err, db) {
+			if( err ) throw err;
+			callback(wrapdb(db));
+		});
+	} else {
+		var options = {safe: true, strict: true, fsync:false, journal:true};
+		var db = new Db('toptal', new Server('127.0.0.1', 27017, {}), options);
+		db.open(function (err, db) {
+			if( err ) throw err;
+			callback(wrapdb(db));
+		});
+	}
 }
 
 // ***** REPOSITORIES ***** //
